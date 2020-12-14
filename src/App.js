@@ -8,32 +8,7 @@ import Button from '@material-ui/core/Button';
 
 function App() {
     const [items, setItems] = useState({
-        list: [
-            {
-                id: 1,
-                text: 'first in todo',
-                completed: true,
-
-            },
-            {
-                id: 2,
-                text: 'wash a car',
-                completed: false,
-
-            },
-            {
-                id: 3,
-                text: 'do a homework',
-                completed: false,
-
-            },
-            {
-                id: 4,
-                text: 'finish review',
-                completed: false,
-
-            }
-        ]
+        list: null
     });
 
     const [history, setHistory] = useState({
@@ -48,27 +23,48 @@ function App() {
         margin: "auto",
         width: "400px"
     };
+    let errorText = null;
 
-    function onCompleteHandler(itemId) {
+    async function onCompleteHandler(itemId) {
         const itemIndex = items.list.findIndex((item) => item.id === itemId);
         const item = {...items.list[itemIndex]};
         item.completed = true;
 
         const updatedItems = [...items.list];
         updatedItems[itemIndex] = item;
-        setItems({list: updatedItems});
-        const historyCopy = {
-            ...history,
-            completed: history.completed + 1
-        };
-        setHistory(historyCopy);
+
+        const responseList = await axios.post("/list", updatedItems).catch(e => e);
+        if (responseList.data) {
+            setItems({list: responseList.data});
+            const historyCopy = {
+                ...history,
+                completed: history.completed + 1
+            };
+            setHistory(historyCopy);
+        }
+
     }
 
-    function onDeleteHandler(id) {
+    async function onDeleteHandler(itemId) {
+        const itemIndex = items.list.findIndex((item) => item.id === itemId);
+        const copiedItems = [...items.list];
+        const deletedElement = copiedItems.splice(itemIndex, 1);
+        const resDelete = await axios.delete("/list/1").catch(e => e);
+        // there is no data for delete so let's just simultae it
+        // like in all other places
+        if (resDelete) {
+            setItems({list: copiedItems});
+            const historyCopy = {
+                ...history,
+                deleted: history.deleted + 1
+            };
+            setHistory(historyCopy);
 
+        }
+        console.log(deletedElement);
     }
 
-    function onSaveToDo() {
+    async function onSaveToDo() {
         if (textInput.current.value === "" || textInput.current.value === null) {
             return;
         }
@@ -79,16 +75,33 @@ function App() {
             completed: false
         };
 
-        newList.unshift(newItem);
-        setItems({list: newList});
-        textInput.current.value = null;
 
-        const historyCopy = {
-            ...history,
-            created: history.created + 1
-        };
+        // since there is no possibility to handle POST,/
+        // let's consider that in case if everything is ok (no errors thrown),
+        // code will continue executing, and state will be updated with new value {/list/:id}
 
-        setHistory(historyCopy);
+        const response = await axios.post("/list", newItem).catch(e => e);
+        const returnedItem = response.data;
+        if (returnedItem) {
+            newList.unshift(response.data);
+            setItems({list: newList});
+
+            // update history only in case if no errors
+            const historyCopy = {
+                ...history,
+                created: history.created + 1
+            };
+            const responseHistory = await axios.post("/history", historyCopy).catch(e => e);
+            if (responseHistory.data) {
+                setHistory(historyCopy);
+            }
+        }
+
+
+        if (textInput.current) {
+            textInput.current.value = null
+        }
+
 
     }
 
@@ -102,25 +115,36 @@ function App() {
 
     useEffect(() => {
         (async () => {
-            const response = await axios.get('https://jsonplaceholder.typicode.com/posts/');
-            console.log(response);
+            try {
+                const response = await axios.get('/list');
+                setItems({list: response.data});
+                const history = await axios.get('/history');
+                setHistory(history.data);
+            } catch (e) {
+                // errorText = "Something went wrong";
+                console.log(e);
+            }
+
         })()
 
-    },[]);
+    }, []);
 
 
-    let list = [];
-    list = items.list.map(item => {
-        return <Item text={item.text}
-                     key={item.id}
-                     completed={item.completed}
-                     onComplete={() => onCompleteHandler(item.id)}
-                     onDelete={() => onDeleteHandler(item.id)}/>
-    });
+    let list;
+    if (items.list) {
+        list = items.list.map(item => {
+            return <Item text={item.text}
+                         key={item.id}
+                         completed={item.completed}
+                         onComplete={() => onCompleteHandler(item.id)}
+                         onDelete={() => onDeleteHandler(item.id)}/>
+        });
+    }
 
 
     return (
         <div className="App">
+            <h2>{errorText}</h2>
             <section className="History">
                 <h1>History:</h1>
                 <p>Deleted:{history.deleted}</p>
@@ -130,13 +154,15 @@ function App() {
             <section className="CreateNew">
                 <input type="text" ref={textInput} onKeyDown={(event) => onHandleKeyDown(event)}
                        placeholder="Add new"/>
-                <Button color='default' onClick={onSaveToDo.bind(this)}>Save</Button>
+                <Button color='default' onClick={() => onSaveToDo()}>Save</Button>
             </section>
-            <section className="list" style={listStyle}>
-                <ul>
-                    {list}
-                </ul>
-            </section>
+            {
+                items.list ? (
+                    <section className="list" style={listStyle}>
+                        <ul>
+                            {list}
+                        </ul>
+                    </section>) : (<Spinner/>)}
         </div>
     );
 }
