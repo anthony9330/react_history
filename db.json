@@ -1,0 +1,30 @@
+{
+  "list": [
+    {
+      "id": 1,
+      "text": "first in todo",
+      "completed": true
+    },
+    {
+      "id": 2,
+      "text": "wash a car",
+      "completed": false
+    },
+    {
+      "id": 3,
+      "text": "do a homework",
+      "completed": false
+    },
+    {
+      "id": 4,
+      "text": "finish review",
+      "completed": false
+    }
+  ],
+  "history": {
+    "created": 0,
+    "completed": 0,
+    "deleted": 0
+  }
+}
+
