@@ -1,0 +1,9 @@
+.Completed {
+    text-decoration: line-through;
+}
+
+.Item {
+    padding: 5px;
+    background: #eee;
+    border-bottom: 1px solid #aaa
+}
