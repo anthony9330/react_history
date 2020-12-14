@@ -22,9 +22,6 @@ function App() {
     // state to rerender loaded items
     const [dataLoaded, setDataLoad] = useState(false);
 
-    const textInput = React.createRef();
-
-
     const listStyle = {
         margin: "auto",
         width: "400px"
@@ -70,52 +67,12 @@ function App() {
         console.log(deletedElement);
     }
 
-    // async function onSaveToDo() {
-    //     if (textInput.current.value === "" || textInput.current.value === null) {
-    //         return;
-    //     }
-    //     const newList = [...items.list];
-    //     const newItem = {
-    //         id: Math.random(),
-    //         text: textInput.current.value,
-    //         completed: false
-    //     };
-    //
-    //
-    //     // since there is no possibility to handle POST,/
-    //     // let's consider that in case if everything is ok (no errors thrown),
-    //     // code will continue executing, and state will be updated with new value {/list/:id}
-    //
-    //     const response = await axios.post("/list", newItem).catch(e => e);
-    //     const returnedItem = response.data;
-    //     if (returnedItem) {
-    //         newList.unshift(response.data);
-    //         setItems({list: newList});
-    //
-    //         // update history only in case if no errors
-    //         const historyCopy = {
-    //             ...history,
-    //             created: history.created + 1
-    //         };
-    //         const responseHistory = await axios.post("/history", historyCopy).catch(e => e);
-    //         if (responseHistory.data) {
-    //             setHistory(historyCopy);
-    //         }
-    //     }
-    //
-    //
-    //     if (textInput.current) {
-    //         textInput.current.value = null
-    //     }
-    // }
-    //
-    // function onHandleKeyDown(e) {
-    //     if (e.key === 'Enter') {
-    //         textInput.current.value = e.target.value;
-    //         onSaveToDo();
-    //         textInput.current.value = null;
-    //     }
-    // }
+    function onRemoveAll() {
+        const nItems = items.list.length;
+        setItems({list: []});
+        const copiedHistory = {...history, deleted: history.deleted + nItems}
+        setHistory(copiedHistory);
+    }
 
     useEffect(() => {
         (async () => {
@@ -159,6 +116,7 @@ function App() {
                 {
                     items.list.length > 0 ? (
                         <section className="list" style={listStyle}>
+                            <button onClick={() => onRemoveAll()}>Remove all</button>
                             <ul>
                                 {list}
                             </ul>
