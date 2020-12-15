@@ -1,5 +1,6 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
+import { StylesProvider } from "@material-ui/core/styles";
 import Spinner from "./Spinner/Spinner";
 import Item from "./Item/Items"
 import History from './History/History';
@@ -22,11 +23,6 @@ function App() {
     // state to rerender loaded items
     const [dataLoaded, setDataLoad] = useState(false);
 
-    const listStyle = {
-        margin: "auto",
-        width: "400px"
-    };
-    let errorText = null;
 
     async function onCompleteHandler(itemId) {
         const itemIndex = items.list.findIndex((item) => item.id === itemId);
@@ -70,7 +66,7 @@ function App() {
     function onRemoveAll() {
         const nItems = items.list.length;
         setItems({list: []});
-        const copiedHistory = {...history, deleted: history.deleted + nItems}
+        const copiedHistory = {...history, deleted: history.deleted + nItems};
         setHistory(copiedHistory);
     }
 
@@ -105,23 +101,30 @@ function App() {
 
     if (dataLoaded) {
         return (
+            <StylesProvider injectFirst>
             <div className="App">
-                <h2>{errorText}</h2>
                 <section className="History">
                     <History history={history}/>
                 </section>
-                <section className="CreateNew">
-                    <Create items={items} setItemsFn={setItems} history={history} setHistoryFn={setHistory}/>
+                <section className="Content">
+                    <div className="CreateNew">
+                        <Create items={items} setItemsFn={setItems} history={history} setHistoryFn={setHistory}/>
+                    </div>
+                    {
+                        items.list.length > 0 ? (
+                            <div className="List">
+                                <div className="RemoveAllWrapper">
+                                    <Button className="AppButton FullWidth RemoveButton" onClick={() => onRemoveAll()}>Remove all</Button>
+                                </div>
+
+                                <ul>
+                                    {list}
+                                </ul>
+                            </div>) : (<h2>There are no todos yet</h2>)}
                 </section>
-                {
-                    items.list.length > 0 ? (
-                        <section className="list" style={listStyle}>
-                            <button onClick={() => onRemoveAll()}>Remove all</button>
-                            <ul>
-                                {list}
-                            </ul>
-                        </section>) : (<h2>There are no todos yet</h2>)}
+
             </div>
+            </StylesProvider>
         );
     } else {
         return (

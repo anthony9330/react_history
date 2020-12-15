@@ -1,9 +1,16 @@
 .Completed {
     text-decoration: line-through;
+    color: #aaa;
 }
 
 .Item {
-    padding: 5px;
-    background: #eee;
+    list-style: none;
+    background: #fff;
     border-bottom: 1px solid #aaa
+}
+
+.ItemText {
+    cursor: pointer;
+    text-align: left;
+    padding-left: 20px;
 }

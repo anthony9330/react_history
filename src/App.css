@@ -1,11 +1,84 @@
-.App {
-    text-align: center;
-}
-
-.CreateNew {
-    padding: 5px;
+body {
+    font-weight: bold;
 }
 
 p {
     margin: 3px;
+}
+
+.App {
+    text-align: center;
+    width: 400px;
+    margin: auto;
+}
+
+.CreateNew {
+    padding: 25px 15px 25px 15px;
+    background-color: #5f5f5f;
+    clip-path: polygon(0 0, 100% 0%, 100% 85%, 0 100%);
+}
+
+.Content {
+    box-shadow: 0px 9px 9px 0px #00000057
+}
+
+.List {
+    margin: auto;
+    width: 100%;
+}
+
+.List ul li:hover {
+    background-color: #e03f3f;
+    color: white;
+}
+
+.List ul {
+    list-style: none;
+    padding: 15px;
+}
+
+.List ul li {
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.List ul li div {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-right: 1px solid #eae9e9;
+    flex: 1 1 100%;
+}
+
+.List ul li button {
+    flex: 6 6 20em;
+
+}
+
+.List ul li .MuiSvgIcon-root {
+    font-size: 35px;
+}
+
+
+.AppButton {
+    margin: 5px;
+    text-transform: capitalize;
+    color: white;
+    font-weight: bold;
+    background: #e03f3f;
+    border-radius: 20px;
+    box-shadow: 1px 2px 9px 0px #00000057;
+}
+
+.FullWidth {
+    width: 100%;
+}
+
+.RemoveButton {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.RemoveAllWrapper {
+    padding: 15px;
 }

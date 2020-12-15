@@ -1,0 +1,20 @@
+.MuiOutlinedInput-root {
+    border-radius: 20px;
+    background: white;
+}
+.CrateComponent {
+    position: relative;
+}
+.MuiTextField-root {
+    width: 100%;
+    position: relative;
+}
+.MuiButtonBase-root {
+
+}
+.CustomButton {
+    right: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}

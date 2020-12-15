@@ -1,9 +1,13 @@
 import Button from "@material-ui/core/Button";
 import React from "react";
 import axios from "axios";
+import TextField from "@material-ui/core/TextField";
+import './Create.css'
+
 
 const create = (props) => {
     const textInput = React.createRef();
+
     async function onSaveToDo() {
         if (textInput.current.value === "" || textInput.current.value === null) {
             return;
@@ -52,10 +56,15 @@ const create = (props) => {
     }
 
     return (
-        <div>
-            <input type="text" ref={textInput} onKeyDown={(event) => onHandleKeyDown(event)}
-                   placeholder="Add new"/>
-            <Button color='default' onClick={() => onSaveToDo()}>Save</Button>
+        <div className="CrateComponent">
+            <TextField
+                inputRef={textInput}
+                onKeyDown={(event) => onHandleKeyDown(event)}
+                size="small"
+                id="outlined-basic"
+                label="Create new todo"
+                variant="outlined"/>
+            <Button className="AppButton CustomButton"  onClick={() => onSaveToDo()}>Save</Button>
         </div>
     )
 };
